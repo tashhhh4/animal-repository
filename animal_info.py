@@ -26,13 +26,14 @@ def basic_animal_info(animals, mode="txt"):
             output += "\n"
 
         elif mode == "html":
-            output += f"Name: {name}\n"
+            output += '<li class="cards__item">'
+            output += f"Name: {name}<br/>"
             if diet:
-                output += f"Diet: {diet}\n"
-            output += f"Location: {location}\n"
+                output += f"Diet: {diet}<br/>"
+            output += f"Location: {location}<br/>"
             if type_:
-                output += f"Type: {characteristics['type']}\n"
-            output += "\n"
+                output += f"Type: {characteristics['type']}<br/>"
+            output += '</li>\n'
         
         else:
             raise TypeError(f"Invalid argument \"{mode}\" for mode (txt | html).")
