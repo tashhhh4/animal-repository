@@ -1,9 +1,11 @@
 # Animal Repository
 A webpage which tracks and displays information about various mammalian species.
 
-Author: Natasha Libera
-Course: MSIT Software Entwicklung Jan 2026
-Codio Project: Zootopia
+|               |                                    |
+|---------------|------------------------------------|
+| Author        | Natasha Libera                     |
+| Course        | MSIT Software Entwicklung Jan 2026 |
+| Codio Project | Zootopia                           |
 
 
 ### View Demo
