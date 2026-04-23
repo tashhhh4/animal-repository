@@ -27,12 +27,14 @@ def generate_animal_card_list(animals, mode="txt"):
 
         elif mode == "html":
             output += '<li class="cards__item">'
-            output += f"Name: {name}<br/>"
+            output += f'<div class="card__title">{name}</div>'
+            output += '<p class="card__text">'
             if diet:
-                output += f"Diet: {diet}<br/>"
-            output += f"Location: {location}<br/>"
+                output += f'<strong>Diet:</strong> {diet}<br/>'
+            output += f'<strong>Location:</strong> {location}<br/>'
             if type_:
-                output += f"Type: {characteristics['type']}<br/>"
+                output += f'<strong>Type:</strong> {type_}<br/>'
+            output += '</p>'
             output += '</li>\n'
         
         else:
@@ -43,4 +45,4 @@ def generate_animal_card_list(animals, mode="txt"):
 
 if __name__ == "__main__":
     animal_data = load_data(JSON_FILENAME)
-    print(basic_animal_info(animal_data))
+    print(generate_animal_card_list(animal_data))

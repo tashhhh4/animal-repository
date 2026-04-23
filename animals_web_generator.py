@@ -1,5 +1,5 @@
 from data import load_data
-from animal_info import generate_animal_card_list
+from animals_card_generator import generate_animal_card_list
 
 JSON_FILENAME = "animals_data.json"
 
