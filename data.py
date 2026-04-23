@@ -1,6 +1,5 @@
 import json
 
-
 # Note: this character seems to be problematic: ’
 # It is not the same as this character: '
 # TODO: clean this character

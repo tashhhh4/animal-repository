@@ -1,43 +1,28 @@
 from data import load_data
+from animal_info import basic_animal_info
 
-JSON_FILENAME = 'animals_data.json'
+JSON_FILENAME = "animals_data.json"
 
-animal_data = load_data(JSON_FILENAME)
 
-def basic_animal_info(animals, mode="txt"):
-    """ Given a list of animals, generates a string with the
-        name, diet, first location, and type fields.
+def generate_animals_page(template_file, output_file, animals_str):
+    """ Replaces the placeholder string in `template_file` with `animals_str`,
+        and saves the result to a new `output_file`.
     """
-    for animal in animals:
-        name = animal["name"]
-        location = animal["locations"][0]
-        characteristics = animal["characteristics"]
-        diet = characteristics["diet"] if "diet" in characteristics else None
-        type_ = characteristics["type"] if "type" in characteristics else None
+    PLACEHOLDER = "__REPLACE_ANIMALS_INFO__"
 
-        if mode="txt":
-            output = ""
-            output += f"Name: {name}\n"
-            if diet:
-                output += f"Diet: {diet}\n"
-            output += f"Location: {location}\n"
-            if type_:
-                output += f"Type: {characteristics['type']}\n"
-            return output
+    if template_file == output_file:
+        raise FileError("Danger! Template and output filename are the same! Aborting.")
 
-        elif mode="html":
-            output = ""
-            output += f"Name: {name}\n"
-            if diet:
-                output += f"Diet: {diet}\n"
-            output += f"Location: {location}\n"
-            if type_:
-                output += f"Type: {characteristics['type']}\n"
-            return output
-        
-        else:
-            raise TypeError(f"Invalid argument \"{mode}\" for mode (txt | html).")
+    with open(template_file, "r") as file:
+        template_str = file.read()
+
+    output_str = template_str.replace(PLACEHOLDER, animals_str)
+
+    with open(output_file, "w") as file:
+        file.write(output_str)
 
 
 if __name__ == "__main__":
-    print(basic_animal_info(animal_data))
+    animal_data = load_data(JSON_FILENAME)
+    animals_str = basic_animal_info(animal_data, mode="html")
+    generate_animals_page("animals_template.html", "animals.html", animals_str)
