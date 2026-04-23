@@ -4,26 +4,42 @@ JSON_FILENAME = 'animals_data.json'
 
 animal_data = load_data(JSON_FILENAME)
 
-def print_basic_animal_info(animals):
-    """ Given a list of animals, prints the name, diet,
-        first location, and type fields.
+def basic_animal_info(animals, mode="txt"):
+    """ Given a list of animals, generates a string with the
+        name, diet, first location, and type fields.
     """
     for animal in animals:
-        characteristics = animal['characteristics']
-        locations = animal['locations']
+        name = animal["name"]
+        location = animal["locations"][0]
+        characteristics = animal["characteristics"]
+        diet = characteristics["diet"] if "diet" in characteristics else None
+        type_ = characteristics["type"] if "type" in characteristics else None
 
-        print(f"Name: {animal['name']}")
+        if mode="txt":
+            output = ""
+            output += f"Name: {name}\n"
+            if diet:
+                output += f"Diet: {diet}\n"
+            output += f"Location: {location}\n"
+            if type_:
+                output += f"Type: {characteristics['type']}\n"
+            return output
 
-        if "diet" in characteristics:
-            print(f"Diet: {characteristics['diet']}")
+        elif mode="html":
+            output = ""
+            output += f"Name: {name}\n"
+            if diet:
+                output += f"Diet: {diet}\n"
+            output += f"Location: {location}\n"
+            if type_:
+                output += f"Type: {characteristics['type']}\n"
+            return output
+        
+        else:
+            raise TypeError(f"Invalid argument \"{mode}\" for mode (txt | html).")
 
-        print(f"Location: {locations[0]}")
 
-        if "type" in characteristics:
-            print(f"Type: {characteristics['type']}")
-            
-        print()
 
 
 if __name__ == "__main__":
-    print_basic_animal_info(animal_data)
+    print(basic_animal_info(animal_data))
