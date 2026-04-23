@@ -27,13 +27,13 @@ def serialize_animal(animal, mode):
     elif mode == "html":
         output += '<li class="cards__item">'
         output += f'<div class="card__title">{name}</div>'
-        output += '<p class="card__text">'
+        output += '<ul class="card__text">'
         if diet:
-            output += f'<strong>Diet:</strong> {diet}<br/>'
-        output += f'<strong>Location:</strong> {location}<br/>'
+            output += f'<li><strong>Diet:</strong> {diet}</li>'
+        output += f'<li><strong>Location:</strong> {location}</li>'
         if type_:
-            output += f'<strong>Type:</strong> {type_}<br/>'
-        output += '</p>'
+            output += f'<li><strong>Type:</strong> {type_}</li>'
+        output += '</ul>'
         output += '</li>\n'
     
     else:
