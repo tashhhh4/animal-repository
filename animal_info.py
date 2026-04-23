@@ -3,7 +3,7 @@ from data import load_data
 JSON_FILENAME = "animals_data.json"
 
 
-def basic_animal_info(animals, mode="txt"):
+def generate_animal_card_list(animals, mode="txt"):
     """ Given a list of animals, generates a string with the
         name, diet, first location, and type fields.
     """

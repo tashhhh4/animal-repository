@@ -1,5 +1,5 @@
 from data import load_data
-from animal_info import basic_animal_info
+from animal_info import generate_animal_card_list
 
 JSON_FILENAME = "animals_data.json"
 
@@ -24,5 +24,5 @@ def generate_animals_page(template_file, output_file, animals_str):
 
 if __name__ == "__main__":
     animal_data = load_data(JSON_FILENAME)
-    animals_str = basic_animal_info(animal_data, mode="html")
+    animals_str = generate_animal_card_list(animal_data, mode="html")
     generate_animals_page("animals_template.html", "animals.html", animals_str)
