@@ -1,1 +1,1 @@
-{"fields": ["diet", "type", "skin_type", "favorite_food", "number_of_species", "predators"], "filters": [{"field": "skin_type", "type": "EQUALS", "query": "Fur"}, {"field": "predators", "type": "CONTAINS", "query": "humans"}]}
+{"fields": ["diet", "type"], "filters": [{"field": "skin_type", "type": "EQUALS", "query": "Fur"}]}

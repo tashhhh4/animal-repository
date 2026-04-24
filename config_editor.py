@@ -9,6 +9,7 @@ FILTER_TYPES = {
     "EQUALS": "Matches only if the field value is EXACTLY the same as the filter.",
     "CONTAINS": "Matches if the filter text is found anywhere in the field.",
 }
+CONFIG_DEFAULT = '{"fields": ["diet", "type"], "filters": [{"field": "skin_type", "type": "EQUALS", "query": "Fur"}]}'
 
 
 # IO
@@ -25,6 +26,12 @@ def save_config(config):
     with open(CONFIG_FILENAME, "w") as file:
         new_config = json.dumps(config)
         file.write(new_config)
+
+
+def reset_default_config():
+    """ Overwrites the current config with the default settings. """
+    with open(CONFIG_FILENAME, "w") as file:
+        file.write(CONFIG_DEFAULT)
 
 
 # Print Helpers
@@ -169,12 +176,21 @@ def show_config():
     print_filter_list(config["filters"])
 
 
+def reset_config():
+    """ Resets the config to the default settings. """
+    confirm = input("Are you sure you want to erase all settings and revert to the default configuration? (Y/N): ")
+    if confirm.lower() in ['y', 'yes', 'true']:
+        reset_default_config()
+        print("Config updated.")
+
+
 available_commands = {
     "add_fields": add_fields,
     "remove_fields": remove_fields,
     "add_filter": add_filter,
     "remove_filter": remove_filter,
     "show_config": show_config,
+    "reset_config": reset_config,
 }
 
 
