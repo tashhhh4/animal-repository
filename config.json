@@ -1,1 +1,1 @@
-{"fields": ["diet", "type"], "filters": [{"field": "skin_type", "type": "EQUALS", "query": "Fur"}]}
+{"fields": ["diet", "type"], "filters": [{"field": "skin_type", "type": "EQUALS", "query": "fur", "match_case": false}]}

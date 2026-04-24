@@ -9,7 +9,7 @@ FILTER_TYPES = {
     "EQUALS": "Matches only if the field value is EXACTLY the same as the filter.",
     "CONTAINS": "Matches if the filter text is found anywhere in the field.",
 }
-CONFIG_DEFAULT = '{"fields": ["diet", "type"], "filters": [{"field": "skin_type", "type": "EQUALS", "query": "Fur"}]}'
+CONFIG_DEFAULT = '{"fields": ["diet", "type"], "filters": [{"field": "skin_type", "type": "EQUALS", "query": "fur", "match_case": false}]}'
 
 
 # IO
@@ -57,7 +57,12 @@ def print_vertical_list(list_, tab=4):
 def print_filter_list(flist):
     """ Prints a list of filters showing all current settings. """
     for i, filter in enumerate(flist):
-        print(f"{i + 1}: {filter['field']} {filter['type']} {filter['query']}")
+        field_name = filter["field"]
+        type_ = filter["type"]
+        query = filter["query"]
+        match_case = filter["match_case"]
+        print(f"{i + 1}: {field_name} {type_} {query}", end=" ")
+        print(f"[case-{'sensitive' if match_case else 'insensitive'}]")
 
 
 # Misc Helper
@@ -68,6 +73,15 @@ def split_user_args(user_args, onlyin):
         `onlyin` reference list.
     """
     return [a for a in user_args.split(" ") if a in onlyin]
+
+
+def get_y_n(user_input):
+    """ Returns True or False based on user's answer to a (Y/N) question. """
+    if user_input.lower() in ['y', 'yes', 'true', 'si', 'ja']:
+        return True
+    elif user_input.lower() in ['n', 'no', 'nein', 'nej', 'false']:
+        return False
+    return None
 
 
 # Commands
@@ -130,6 +144,11 @@ def add_filter():
     if len(user_input_cleaned) != 1:
         print("Invalid filter type.")
         return
+    print()
+    user_input = input("Should the filter be case sensitive? (Y/N): ")
+    answer = get_y_n(user_input)
+    match_case = answer == True
+    print()
     filter_type = user_input_cleaned[0]
     filter_text = input("Enter filter text: ")
 
@@ -137,7 +156,8 @@ def add_filter():
     config["filters"].append({
         "field": filter_field,
         "type": filter_type,
-        "query": filter_text
+        "query": filter_text,
+        "match_case": match_case,
     })
     save_config(config)
     print("Filter added.")
