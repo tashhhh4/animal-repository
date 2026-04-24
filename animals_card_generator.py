@@ -10,8 +10,12 @@ FIELDS = get_all_fields(ANIMAL_DATA)
 def passes_filter(animal, filter):
     """ Determines if one animal object matches the rules of the filter. """
     filter_type = filter["type"]
+    match_case = filter["match_case"]
     query = filter["query"]
     actual_value = get_animal_field_value(animal, filter["field"])
+    if not match_case:
+        query = query.lower()
+        actual_value = actual_value.lower()
 
     if filter["type"] == "EQUALS":
         if filter["query"] != actual_value:
