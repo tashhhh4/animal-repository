@@ -69,10 +69,6 @@ def serialize_animal(animal, fields=["diet", "type"], mode="txt"):
         output += f'<div class="card__title">{name}</div>'
         output += '<ul class="card__text">'
         output += f'<li><strong>Location:</strong> {location}</li>'
-        # if diet:
-        #     output += f'<li><strong>Diet:</strong> {diet}</li>'
-        # if type_:
-        #     output += f'<li><strong>Type:</strong> {type_}</li>'
         for field_name, value in other_traits:
             if value is not None:
                 output += f'<li><strong>{field_name.capitalize()}:</strong> {value}</li>'
