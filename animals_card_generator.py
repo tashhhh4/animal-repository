@@ -11,13 +11,15 @@ def passes_filter(animal, filter):
     """ Determines if one animal object matches the rules of the filter. """
     filter_type = filter["type"]
     query = filter["query"]
-    actual_value = get_animal_field_value(animal, filter["subfield"])
+    actual_value = get_animal_field_value(animal, filter["field"])
 
     if filter["type"] == "EQUALS":
         if filter["query"] != actual_value:
             return False
 
     elif filter["type"] == "CONTAINS":
+        if actual_value is None:
+            return False
         if filter["query"] not in actual_value:
             return False
 

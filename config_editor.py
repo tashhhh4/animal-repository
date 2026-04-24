@@ -50,7 +50,7 @@ def print_vertical_list(list_, tab=4):
 def print_filter_list(flist):
     """ Prints a list of filters showing all current settings. """
     for i, filter in enumerate(flist):
-        print(f"{i + 1}: {filter['field']}::{filter['subfield']} {filter['type']} {filter['query']}")
+        print(f"{i + 1}: {filter['field']} {filter['type']} {filter['query']}")
 
 
 # Misc Helper
@@ -60,7 +60,6 @@ def split_user_args(user_args, onlyin):
         removing empty strings and items not present in the
         `onlyin` reference list.
     """
-    print("top of split_user_args. user_args is", user_args)
     return [a for a in user_args.split(" ") if a in onlyin]
 
 
@@ -129,8 +128,7 @@ def add_filter():
 
     config = load_config()
     config["filters"].append({
-        "field": FIELDS[filter_field],
-        "subfield": filter_field,
+        "field": filter_field,
         "type": filter_type,
         "query": filter_text
     })
@@ -155,6 +153,7 @@ def remove_filter():
         filters.pop(target_index)
     except (ValueError, IndexError):
         print("Number input failed.")
+        return
     config["filters"] = filters
     save_config(config)
     print("Filter removed.")

@@ -1,1 +1,1 @@
-{"fields": ["weight", "lifespan", "name_of_young", "habitat", "group_behavior", "skin_type"], "filters": [{"field": "characteristics", "subfield": "skin_type", "type": "EQUALS", "query": "Hair"}]}
+{"fields": ["diet", "type", "skin_type", "favorite_food", "number_of_species", "predators"], "filters": [{"field": "skin_type", "type": "EQUALS", "query": "Fur"}, {"field": "predators", "type": "CONTAINS", "query": "humans"}]}
