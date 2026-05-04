@@ -4,6 +4,18 @@ import secrets
 from data import load_data, fetch_data, get_all_fields, get_values_sample
 
 CONFIG_FILENAME = "config.json"
+FILTER_TYPES = {
+    "EQUALS": "Matches only if the field value is EXACTLY the same as the filter.",
+    "CONTAINS": "Matches if the filter text is found anywhere in the field.",
+}
+CONFIG_DEFAULT = json.dumps({
+    "fields": ["diet", "type"],
+    "filters": [{"field": "skin_type", "type": "EQUALS", "query": "fur", "match_case": False}],
+    "query": "Fox"}
+)
+
+
+# IO
 
 def load_config():
     """ Loads the config. """
@@ -11,30 +23,28 @@ def load_config():
         config = json.load(file)
     return config
 
-config = load_config()
-ANIMAL_DATA = fetch_data(secrets.API_KEY, config["query"])
-FIELDS = get_all_fields(ANIMAL_DATA)
-FILTER_TYPES = {
-    "EQUALS": "Matches only if the field value is EXACTLY the same as the filter.",
-    "CONTAINS": "Matches if the filter text is found anywhere in the field.",
-}
-
-CONFIG_DEFAULT = json.dumps({
-    "fields": ["diet", "type"],
-    "filters": [{"field": "skin_type", "type": "EQUALS", "query": "fur", "match_case": False}],
-    "query": "Fox"}
-)
-
 def save_config(config):
     """ Saves the config. """
-    with open(settings.CONFIG_FILENAME, "w") as file:
+    with open(CONFIG_FILENAME, "w") as file:
         new_config = json.dumps(config)
         file.write(new_config)
 
 def reset_default_config():
     """ Overwrites the current config with the default settings. """
-    with open(settings.CONFIG_FILENAME, "w") as file:
+    with open(CONFIG_FILENAME, "w") as file:
         file.write(CONFIG_DEFAULT)
+
+
+# Preview Data
+
+def get_animal_data():
+    config = load_config()
+    animal_data = fetch_data(secrets.API_KEY, config["query"])
+    return animal_data
+
+def get_fields():
+    fields = get_all_fields(get_animal_data())
+    return fields
 
 
 # Print Helpers
@@ -92,9 +102,10 @@ def get_y_n(user_input):
 def add_fields():
     """ Allows user to choose any number of fields available in the dataset. """
     print("Available fields:")
-    print_comma_list(list(FIELDS))
+    fields = get_fields()
+    print_comma_list(fields)
     user_input = input("Input desired fields, separated by spaces: ")
-    user_args_cleaned = split_user_args(user_input, onlyin=FIELDS)
+    user_args_cleaned = split_user_args(user_input, onlyin=fields)
     config = load_config()
     for field in user_args_cleaned:
         if field not in config["fields"]:                
@@ -119,13 +130,16 @@ def remove_fields():
 
 def add_filter():
     """ Allows user to add a filter on the dataset. """
+    animal_data = get_animal_data()
+    fields = get_fields()
+
     print()
     print("Fields available for filtering:")
-    print_comma_list(list(FIELDS))
+    print_comma_list(fields)
     print()
     user_input = input("Enter field to filter by: ")
     print()
-    user_args_cleaned = split_user_args(user_input, onlyin=FIELDS)
+    user_args_cleaned = split_user_args(user_input, onlyin=fields)
     if len(user_args_cleaned) == 0:
         print("Field not found.")
         return
@@ -134,7 +148,7 @@ def add_filter():
         return
     filter_field = user_args_cleaned[0]
     print(f"Composing filter on {filter_field}. Some examples of values found here are:")
-    sample_values = get_values_sample(ANIMAL_DATA, FIELDS[filter_field], filter_field, num=6)
+    sample_values = get_values_sample(animal_data, fields[filter_field], filter_field, num=6)
     print_vertical_list(sample_values, tab=8)
     print()
     print("Available filters are:")
@@ -192,6 +206,8 @@ def remove_filter():
 def show_config():
     """ Prints out all of the current settings. """
     config = load_config()
+    print("Animal Name Query:", config["query"])
+    print()
     print("Field Selection:")
     print_comma_list(config["fields"])
     print()
@@ -201,10 +217,19 @@ def show_config():
 
 def edit_query():
     """ Allows the user to change the basic animal query sent to the Animals API. """
-    print("Here you can edit the animal search query. The data will include all matches for the common name of the animal. Here are some examples:")
+    print("Edit the main animal name to search. Here are some examples:")
     print("   Fox   Bear   Spider")
-    print()
-    print("If there are no results you will see an error when trying to generate the page.")
+    print("The query must return at least one result to be valid.")
+    user_input = input("New animal name query: ")
+    try:
+        test_animal_data = fetch_data(secrets.API_KEY, user_input)
+    except ValueError as e:
+        print(e)
+        return
+    config = load_config()
+    config["query"] = user_input
+    save_config(config)
+    print("Config updated.")
 
 
 def reset_config():

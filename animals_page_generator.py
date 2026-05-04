@@ -29,8 +29,6 @@ if __name__ == "__main__":
     try:
         config = load_config()
         animal_data = fetch_data(secrets.API_KEY, config["query"])
-        if not len(animal_data):
-            raise ValueError("No data found.")
     except ValueError as e:
         print(e)
         sys.exit()

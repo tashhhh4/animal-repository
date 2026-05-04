@@ -103,8 +103,8 @@ def generate_animal_card_list(animals, mode="txt"):
 
 
 if __name__ == "__main__":
-    animal_data = fetch_data(secrets.API_KEY, config["query"])
-    if len(animal_data):
+    try:
+        animal_data = fetch_data(secrets.API_KEY, config["query"])
         print(generate_animal_card_list(animal_data))
-    else:
-        print("Error: Empty result!")
+    except ValueError as e:
+        print(e)

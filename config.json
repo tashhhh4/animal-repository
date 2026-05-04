@@ -1,1 +1,1 @@
-{"fields": ["diet", "type"], "filters": [{"field": "skin_type", "type": "EQUALS", "query": "fur", "match_case": false}], "query": "Dog"}
+{"fields": ["diet", "type", "weight", "water_type", "main_prey", "favorite_food", "optimum_ph_level"], "filters": [], "query": "fish"}
