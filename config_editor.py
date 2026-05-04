@@ -9,7 +9,11 @@ FILTER_TYPES = {
     "EQUALS": "Matches only if the field value is EXACTLY the same as the filter.",
     "CONTAINS": "Matches if the filter text is found anywhere in the field.",
 }
-CONFIG_DEFAULT = '{"fields": ["diet", "type"], "filters": [{"field": "skin_type", "type": "EQUALS", "query": "fur", "match_case": false}]}'
+CONFIG_DEFAULT = json.dumps({
+    "fields": ["diet", "type"],
+    "filters": [{"field": "skin_type", "type": "EQUALS", "query": "fur", "match_case": False}],
+    "query": "Fox"}
+)
 
 
 # IO
@@ -196,6 +200,14 @@ def show_config():
     print_filter_list(config["filters"])
 
 
+def edit_query():
+    """ Allows the user to change the basic animal query sent to the Animals API. """
+    print("Here you can edit the animal search query. The data will include all matches for the common name of the animal. Here are some examples:")
+    print("   Fox   Bear   Spider")
+    print()
+    print("If there are no results you will see an error when trying to generate the page.")
+
+
 def reset_config():
     """ Resets the config to the default settings. """
     confirm = input("Are you sure you want to erase all settings and revert to the default configuration? (Y/N): ")
@@ -210,6 +222,7 @@ available_commands = {
     "add_filter": add_filter,
     "remove_filter": remove_filter,
     "show_config": show_config,
+    "edit_query": edit_query,
     "reset_config": reset_config,
 }
 

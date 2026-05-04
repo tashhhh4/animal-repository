@@ -17,6 +17,13 @@ def load_data(file_path):
         return json.loads(cleaned_str)
 
 
+def save_data(file_path, data):
+    """ Overwrites the local JSON datafile with the latest API call. """
+    with open(file_path, "w") as file:
+        json_data = json.dumps(data)
+        file.write(json_data)
+
+
 def fetch_data(api_key, animal_query):
     """ Fetches JSON data from the Animals API """
     headers = {"X-Api-Key": api_key}
