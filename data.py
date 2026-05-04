@@ -1,4 +1,5 @@
 import json
+import requests
 
 
 def clean_data(data_str):
@@ -14,6 +15,14 @@ def load_data(file_path):
         data_str = file.read()
         cleaned_str = clean_data(data_str)
         return json.loads(cleaned_str)
+
+
+def fetch_data(api_key, animal_query):
+    """ Fetches JSON data from the Animals API """
+    headers = {"X-Api-Key": api_key}
+    response = requests.get(f'https://api.api-ninjas.com/v1/animals?name={animal_query}', headers=headers)
+    json = response.json()
+    return json
 
 
 def get_all_fields(data):

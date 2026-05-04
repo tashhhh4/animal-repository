@@ -1,5 +1,6 @@
-from data import load_data
+from data import load_data, fetch_data
 from animals_card_generator import get_animal_field_value
+import settings
 
 
 def print_divider():
@@ -21,3 +22,16 @@ val1 = get_animal_field_value(animal1, field)
 val2 = get_animal_field_value(animal2, field)
 assert len(val1)
 assert val2 is None
+print_divider()
+
+# print("Testing Animals API Call (Query=\"Fox\").")
+# json = fetch_data(settings.API_KEY, "Fox")
+# assert len(json)
+# print_divider()
+
+# print("Testing Animals API Error.")
+# json = fetch_data(settings.API_KEY, "Not A Real Animal Query")
+# try:
+#     assert len(json)
+# except AssertionError:
+#     print("Got", len(json), "results.")
