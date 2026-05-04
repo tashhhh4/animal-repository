@@ -28,6 +28,10 @@ Output: `animals.html`
 
 ### Config Editor
 A tool which allows the user to choose the fields displayed and set filters for data used in output generation.
+Supported settings:
+    - add or remove data fields ('name' and 'locations' can't be changed)
+    - add or remove query filters
+    <!-- - (WIP) change initial animal query (Used to fetch data from Animals API) -->
 
     python config_editor.py
 
