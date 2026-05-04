@@ -215,13 +215,7 @@ def edit_query():
     """ Allows the user to change the basic animal query sent to the Animals API. """
     print("Edit the main animal name to search. Here are some examples:")
     print("   Fox   Bear   Spider")
-    print("The query must return at least one result to be valid.")
     user_input = input("New animal name query: ")
-    try:
-        test_animal_data = fetch_data(secrets.API_KEY, user_input)
-    except ValueError as e:
-        print(e)
-        return
     config = load_config()
     config["query"] = user_input
     save_config(config)

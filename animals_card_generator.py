@@ -94,6 +94,15 @@ def generate_animal_card_list(animals, mode="txt"):
             "html": Returns a string of <li> elements for an HTML template.
     """
     print("Generating card list.")
+    config = load_config()
+    if not len(animals):
+        output = ''
+        if mode == "html":
+            output += '<p class="feedback">'
+        output += f"There are no animals called \"{config['query']}\"."
+        if mode == "html":
+            output += '</p>'
+        return output
     animals = filter_animals(animals, config["filters"])
     output = ''
     for animal in animals:
@@ -102,8 +111,5 @@ def generate_animal_card_list(animals, mode="txt"):
 
 
 if __name__ == "__main__":
-    try:
-        animal_data = fetch_data(secrets.API_KEY, config["query"])
-        print(generate_animal_card_list(animal_data))
-    except ValueError as e:
-        print(e)
+    animal_data = fetch_data(secrets.API_KEY, config["query"])
+    print(generate_animal_card_list(animal_data))

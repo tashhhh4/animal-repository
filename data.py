@@ -48,16 +48,12 @@ def fetch_data(api_key, animal_query):
 
     if cached_query == animal_query:
         data = load_data(settings.JSON_FILENAME)
-        if not len(data):
-            raise ValueError("Error: No results.")
 
     else:
         set_query_cache(animal_query)
         headers = {"X-Api-Key": api_key}
         response = requests.get(f'https://api.api-ninjas.com/v1/animals?name={animal_query}', headers=headers)
         data = response.json()
-        if not len(data):
-            raise ValueError("Error: No results.")
         save_data(settings.JSON_FILENAME, data)
 
         # Update fields collection
