@@ -1,4 +1,6 @@
-from data import load_data
+import sys
+import settings
+from data import load_data, fetch_data
 from animals_card_generator import generate_animal_card_list
 
 JSON_FILENAME = "animals_data.json"
@@ -23,6 +25,13 @@ def generate_animals_page(template_file, output_file, animals_str):
 
 
 if __name__ == "__main__":
-    animal_data = load_data(JSON_FILENAME)
+    # animal_data = load_data(JSON_FILENAME)
+    try:
+        animal_data = fetch_data(settings.API_KEY, "Bear")
+        if not len(animal_data):
+            raise ValueError("No data found.")
+    except ValueError as e:
+        print(e)
+        sys.exit()
     animals_str = generate_animal_card_list(animal_data, mode="html")
     generate_animals_page("animals_template.html", "animals.html", animals_str)
