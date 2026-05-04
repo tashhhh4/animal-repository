@@ -1,8 +1,7 @@
 import sys
 import pathlib
-import secrets
 import settings
-from data import load_data, fetch_data
+from data_fetcher import load_data, fetch_data
 from animals_card_generator import generate_animal_card_list
 from config_editor import load_config
 
@@ -26,12 +25,8 @@ def generate_animals_page(template_file, output_file, animals_str):
 
 
 if __name__ == "__main__":
-    try:
-        config = load_config()
-        animal_data = fetch_data(secrets.API_KEY, config["query"])
-    except ValueError as e:
-        print(e)
-        sys.exit()
+    config = load_config()
+    animal_data = fetch_data(config["query"])
     animals_str = generate_animal_card_list(animal_data, mode="html")
     generate_animals_page(settings.TEMPLATE_FILENAME, settings.OUTPUT_FILENAME, animals_str)
     path = pathlib.Path(settings.OUTPUT_FILENAME).resolve()

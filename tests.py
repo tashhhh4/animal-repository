@@ -1,4 +1,4 @@
-from data import load_data, fetch_data, get_dataset_fields, get_all_fields, update_fields_cache
+from data_fetcher import load_data, fetch_data, get_dataset_fields, get_all_fields, update_fields_cache
 from animals_card_generator import get_animal_field_value
 import secrets
 
@@ -25,12 +25,12 @@ print_divider()
 # print_divider()
 
 print("Testing Animals API Call (Query=\"Fox\").")
-animals_data = fetch_data(secrets.API_KEY, "Fox")
+animals_data = fetch_data("Fox")
 assert len(animals_data)
 print_divider()
 
 # print("Testing Animals API Error.")
-# json = fetch_data(secrets.API_KEY, "Not A Real Animal Query")
+# json = fetch_data("Not A Real Animal Query")
 # try:
 #     assert len(json)
 # except AssertionError:

@@ -1,7 +1,6 @@
 import json
 import settings
-import secrets
-from data import load_data, fetch_data, get_all_fields, get_values_sample
+from data_fetcher import load_data, fetch_data, get_all_fields, get_values_sample
 
 CONFIG_FILENAME = "config.json"
 FILTER_TYPES = {
@@ -39,7 +38,7 @@ def reset_default_config():
 
 def get_animal_data():
     config = load_config()
-    animal_data = fetch_data(secrets.API_KEY, config["query"])
+    animal_data = fetch_data(config["query"])
     return animal_data
 
 
