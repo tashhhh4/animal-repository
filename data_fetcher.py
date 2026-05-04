@@ -1,7 +1,6 @@
 import json
 import requests
 import settings
-import secrets
 
 QUERY_CACHEFILE = "query.txt"
 FIELDS_CACHEFILE = "fields.json"
@@ -52,7 +51,7 @@ def fetch_data(animal_query):
 
     else:
         set_query_cache(animal_query)
-        headers = {"X-Api-Key": secrets.api_key}
+        headers = {"X-Api-Key": settings.API_KEY}
         response = requests.get(f'https://api.api-ninjas.com/v1/animals?name={animal_query}', headers=headers)
         data = response.json()
         save_data(settings.JSON_FILENAME, data)

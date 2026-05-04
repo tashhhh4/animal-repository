@@ -212,7 +212,7 @@ def show_config():
 
 def edit_query():
     """ Allows the user to change the basic animal query sent to the Animals API. """
-    print("Edit the main animal name to search. Here are some examples:")
+    print("Edit the name of an animal to search. Here are some examples:")
     print("   Fox   Bear   Spider")
     user_input = input("New animal name query: ")
     config = load_config()
