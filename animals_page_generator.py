@@ -1,7 +1,9 @@
 import sys
 import secrets
+import settings
 from data import load_data, fetch_data
 from animals_card_generator import generate_animal_card_list
+from config_editor import load_config
 
 
 def generate_animals_page(template_file, output_file, animals_str):
@@ -24,11 +26,13 @@ def generate_animals_page(template_file, output_file, animals_str):
 
 if __name__ == "__main__":
     try:
-        animal_data = fetch_data(settings.API_KEY, "Bear")
+        config = load_config()
+        animal_data = fetch_data(secrets.API_KEY, config["query"])
         if not len(animal_data):
             raise ValueError("No data found.")
     except ValueError as e:
         print(e)
         sys.exit()
     animals_str = generate_animal_card_list(animal_data, mode="html")
-    generate_animals_page("animals_template.html", "animals.html", animals_str)
+    generate_animals_page(settings.TEMPLATE_FILENAME, settings.OUTPUT_FILENAME, animals_str)
+    print("Saved view to", settings.OUTPUT_FILENAME)
