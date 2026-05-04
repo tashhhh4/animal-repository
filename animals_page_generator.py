@@ -1,4 +1,5 @@
 import sys
+import pathlib
 import secrets
 import settings
 from data import load_data, fetch_data
@@ -35,4 +36,5 @@ if __name__ == "__main__":
         sys.exit()
     animals_str = generate_animal_card_list(animal_data, mode="html")
     generate_animals_page(settings.TEMPLATE_FILENAME, settings.OUTPUT_FILENAME, animals_str)
-    print("Saved view to", settings.OUTPUT_FILENAME)
+    path = pathlib.Path(settings.OUTPUT_FILENAME).resolve()
+    print(f"Saved view to: {path.as_uri()}")
