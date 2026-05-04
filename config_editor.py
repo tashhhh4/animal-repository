@@ -3,34 +3,33 @@ import settings
 import secrets
 from data import load_data, fetch_data, get_all_fields, get_values_sample
 
-ANIMAL_DATA = fetch_data(secrets.API_KEY, "Fox")
+CONFIG_FILENAME = "config.json"
+
+def load_config():
+    """ Loads the config. """
+    with open(CONFIG_FILENAME, "r") as file:
+        config = json.load(file)
+    return config
+
+config = load_config()
+ANIMAL_DATA = fetch_data(secrets.API_KEY, config["query"])
 FIELDS = get_all_fields(ANIMAL_DATA)
 FILTER_TYPES = {
     "EQUALS": "Matches only if the field value is EXACTLY the same as the filter.",
     "CONTAINS": "Matches if the filter text is found anywhere in the field.",
 }
+
 CONFIG_DEFAULT = json.dumps({
     "fields": ["diet", "type"],
     "filters": [{"field": "skin_type", "type": "EQUALS", "query": "fur", "match_case": False}],
     "query": "Fox"}
 )
 
-
-# IO
-
-def load_config():
-    """ Loads the config. """
-    with open(settings.CONFIG_FILENAME, "r") as file:
-        config = json.load(file)
-    return config
-
-
 def save_config(config):
     """ Saves the config. """
     with open(settings.CONFIG_FILENAME, "w") as file:
         new_config = json.dumps(config)
         file.write(new_config)
-
 
 def reset_default_config():
     """ Overwrites the current config with the default settings. """

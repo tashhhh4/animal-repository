@@ -1,9 +1,9 @@
 import secrets
-from data import load_data, fetch_data, get_all_fields
+from data import fetch_data, get_all_fields
 from config_editor import load_config
 
-CONFIG_FILENAME = "config.json"
-ANIMAL_DATA = fetch_data(secrets.API_KEY, "Fox")
+config = load_config()
+ANIMAL_DATA = fetch_data(secrets.API_KEY, config["query"])
 FIELDS = get_all_fields(ANIMAL_DATA)
 
 
@@ -15,7 +15,8 @@ def passes_filter(animal, filter):
     actual_value = get_animal_field_value(animal, filter["field"])
     if not match_case:
         query = query.lower()
-        actual_value = actual_value.lower()
+        if actual_value is not None:
+            actual_value = actual_value.lower()
 
     if filter["type"] == "EQUALS":
         if filter["query"] != actual_value:
@@ -93,7 +94,7 @@ def generate_animal_card_list(animals, mode="txt"):
             "txt": Returns a string that can be printed to the console.
             "html": Returns a string of <li> elements for an HTML template.
     """
-    config = load_config()
+    print("Generating card list.")
     animals = filter_animals(animals, config["filters"])
     output = ''
     for animal in animals:
@@ -102,5 +103,8 @@ def generate_animal_card_list(animals, mode="txt"):
 
 
 if __name__ == "__main__":
-    animal_data = fetch_data(secrets.API_KEY, "Fox")
-    print(generate_animal_card_list(animal_data))
+    animal_data = fetch_data(secrets.API_KEY, config["query"])
+    if len(animal_data):
+        print(generate_animal_card_list(animal_data))
+    else:
+        print("Error: Empty result!")

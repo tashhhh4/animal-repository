@@ -35,8 +35,9 @@ def load_data(file_path):
 
 def save_data(file_path, data):
     """ Overwrites the local JSON datafile with the latest API call. """
+    print("saving data...")
+    json_data = json.dumps(data)
     with open(file_path, "w") as file:
-        json_data = json.dumps(data)
         file.write(json_data)
 
 
@@ -46,15 +47,16 @@ def fetch_data(api_key, animal_query):
     cached_query = get_query_cache()
 
     if cached_query == animal_query:
-        json_data = load_data(settings.JSON_FILENAME)
+        data = load_data(settings.JSON_FILENAME)
 
     else:
         set_query_cache(animal_query)
         headers = {"X-Api-Key": api_key}
         response = requests.get(f'https://api.api-ninjas.com/v1/animals?name={animal_query}', headers=headers)
-        json_data = response.json()
+        data = response.json()
+        save_data(settings.JSON_FILENAME, data)
 
-    return json_data
+    return data
 
 
 def get_all_fields(data):
