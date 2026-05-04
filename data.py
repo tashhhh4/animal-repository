@@ -1,5 +1,8 @@
 import json
 import requests
+import settings
+
+QUERY_CACHEFILE = "query.txt"
 
 
 def clean_data(data_str):
@@ -7,6 +10,19 @@ def clean_data(data_str):
     data_str = data_str.replace("â€™", "'")  # apostrophe character
     data_str = data_str.replace("â€“", "–")  # dash character
     return data_str
+
+
+def get_query_cache():
+    """ Returns an animal name query from the query cache file. """
+    with open(QUERY_CACHEFILE, 'r') as file:
+        query = file.read()
+    return query
+
+
+def set_query_cache(query):
+    """ Sets the animal name query in the query cache file. """
+    with open(QUERY_CACHEFILE, 'w') as file:
+        file.write(query)
 
 
 def load_data(file_path):
@@ -26,10 +42,19 @@ def save_data(file_path, data):
 
 def fetch_data(api_key, animal_query):
     """ Fetches JSON data from the Animals API """
-    headers = {"X-Api-Key": api_key}
-    response = requests.get(f'https://api.api-ninjas.com/v1/animals?name={animal_query}', headers=headers)
-    json = response.json()
-    return json
+    # Check if the query needs to be repeated
+    cached_query = get_query_cache()
+
+    if cached_query == animal_query:
+        json_data = load_data(settings.JSON_FILENAME)
+
+    else:
+        set_query_cache(animal_query)
+        headers = {"X-Api-Key": api_key}
+        response = requests.get(f'https://api.api-ninjas.com/v1/animals?name={animal_query}', headers=headers)
+        json_data = response.json()
+
+    return json_data
 
 
 def get_all_fields(data):

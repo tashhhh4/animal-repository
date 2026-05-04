@@ -1,9 +1,9 @@
 import json
-from data import load_data, get_all_fields, get_values_sample
+import settings
+import secrets
+from data import load_data, fetch_data, get_all_fields, get_values_sample
 
-DATA_FILENAME = "animals_data.json"
-CONFIG_FILENAME = "config.json"
-ANIMAL_DATA = load_data(DATA_FILENAME)
+ANIMAL_DATA = fetch_data(secrets.API_KEY, "Fox")
 FIELDS = get_all_fields(ANIMAL_DATA)
 FILTER_TYPES = {
     "EQUALS": "Matches only if the field value is EXACTLY the same as the filter.",
@@ -20,21 +20,21 @@ CONFIG_DEFAULT = json.dumps({
 
 def load_config():
     """ Loads the config. """
-    with open(CONFIG_FILENAME, "r") as file:
+    with open(settings.CONFIG_FILENAME, "r") as file:
         config = json.load(file)
     return config
 
 
 def save_config(config):
     """ Saves the config. """
-    with open(CONFIG_FILENAME, "w") as file:
+    with open(settings.CONFIG_FILENAME, "w") as file:
         new_config = json.dumps(config)
         file.write(new_config)
 
 
 def reset_default_config():
     """ Overwrites the current config with the default settings. """
-    with open(CONFIG_FILENAME, "w") as file:
+    with open(settings.CONFIG_FILENAME, "w") as file:
         file.write(CONFIG_DEFAULT)
 
 

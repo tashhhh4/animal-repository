@@ -1,6 +1,6 @@
 from data import load_data, fetch_data
 from animals_card_generator import get_animal_field_value
-import settings
+import secrets
 
 
 def print_divider():
@@ -24,13 +24,13 @@ assert len(val1)
 assert val2 is None
 print_divider()
 
-# print("Testing Animals API Call (Query=\"Fox\").")
-# json = fetch_data(settings.API_KEY, "Fox")
-# assert len(json)
-# print_divider()
+print("Testing Animals API Call (Query=\"Fox\").")
+json = fetch_data(secrets.API_KEY, "Fox")
+assert len(json)
+print_divider()
 
 # print("Testing Animals API Error.")
-# json = fetch_data(settings.API_KEY, "Not A Real Animal Query")
+# json = fetch_data(secrets.API_KEY, "Not A Real Animal Query")
 # try:
 #     assert len(json)
 # except AssertionError:

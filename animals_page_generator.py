@@ -1,9 +1,7 @@
 import sys
-import settings
+import secrets
 from data import load_data, fetch_data
 from animals_card_generator import generate_animal_card_list
-
-JSON_FILENAME = "animals_data.json"
 
 
 def generate_animals_page(template_file, output_file, animals_str):
@@ -25,7 +23,6 @@ def generate_animals_page(template_file, output_file, animals_str):
 
 
 if __name__ == "__main__":
-    # animal_data = load_data(JSON_FILENAME)
     try:
         animal_data = fetch_data(settings.API_KEY, "Bear")
         if not len(animal_data):
