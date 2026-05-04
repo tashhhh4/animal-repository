@@ -16,13 +16,17 @@ The generated pages follow this design:
 ### Animal Facts Generator
 Prints out the animal data to the console
 
-    python animals_card_generator.py
+```
+python animals_card_generator.py
+```
 
 ### Animal Webpage Generator
 Generates an HTML page that can be run in the
 browser to see a formatted list of fact cards.
 
-    python animals_page_generator.py
+```
+python animals_page_generator.py
+```
 
 Output: `animals.html`
 
@@ -33,9 +37,9 @@ Supported settings:
 * add or remove query filters
 * change the animal search query
 
-    ```
-    python config_editor.py
-    ```
+```
+python config_editor.py
+```
 
 Output: `config.json`
 
@@ -48,8 +52,8 @@ If you run the scripts on your computer with Python, you will need to activate a
 3. Run `./.venv/Scripts/activate`
 4. Run pip install:
 
-    ```
-    pip install -r requirements.txt
-    ```
+```
+pip install -r requirements.txt
+```
 
 After these steps, you should be able to run the 3 main scripts.
