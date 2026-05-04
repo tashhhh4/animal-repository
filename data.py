@@ -3,6 +3,7 @@ import requests
 import settings
 
 QUERY_CACHEFILE = "query.txt"
+FIELDS_CACHEFILE = "fields.json"
 
 
 def clean_data(data_str):
@@ -59,10 +60,14 @@ def fetch_data(api_key, animal_query):
             raise ValueError("Error: No results.")
         save_data(settings.JSON_FILENAME, data)
 
+        # Update fields collection
+        fields = get_dataset_fields(data)
+        update_fields_cache(fields)
+
     return data
 
 
-def get_all_fields(data):
+def get_dataset_fields(data):
     """ Returns a list of all optional animal data fields
         underneath "characteristics" and "taxonomy".
         "Locations" and "Name" cannot be removed.
@@ -80,6 +85,24 @@ def get_all_fields(data):
                     if subkey not in fields:
                         fields[subkey] = key
     return fields
+
+
+def update_fields_cache(new_fields):
+    """ Updates the fields cache with new fields if necessary. """
+    with open(FIELDS_CACHEFILE, 'r') as file:
+        fields = json.loads(file.read())
+    for field in new_fields:
+        if field not in fields:
+            fields[field] = new_fields[field]
+    with open(FIELDS_CACHEFILE, 'w') as file:
+        file.write(json.dumps(fields))
+
+
+def get_all_fields():
+    """ Gets all discovered fields from the fields cache file, and returns them as a list."""
+    with open(FIELDS_CACHEFILE, 'r') as file:
+        data = json.loads(file.read())
+    return data
 
 
 def get_values_sample(data, field, subfield, num=3):

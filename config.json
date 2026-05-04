@@ -1,1 +1,1 @@
-{"fields": ["diet", "type", "weight", "water_type", "main_prey", "favorite_food", "optimum_ph_level"], "filters": [], "query": "fish"}
+{"fields": ["diet", "type", "weight", "water_type", "favorite_food", "optimum_ph_level", "biggest_threat"], "filters": [], "query": "fish"}

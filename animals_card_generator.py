@@ -3,8 +3,6 @@ from data import fetch_data, get_all_fields
 from config_editor import load_config
 
 config = load_config()
-ANIMAL_DATA = fetch_data(secrets.API_KEY, config["query"])
-FIELDS = get_all_fields(ANIMAL_DATA)
 
 
 def passes_filter(animal, filter):
@@ -46,7 +44,8 @@ def get_animal_field_value(animal, field):
         either the "characteristics" or "taxonomy" dicts.
         Returns None if the animal does not have this field.
     """
-    parent_field = FIELDS[field]
+    fields = get_all_fields()
+    parent_field = fields[field]
     if field in animal[parent_field]:
         return animal[parent_field][field]
     else:
@@ -58,7 +57,7 @@ def serialize_animal(animal, fields=["diet", "type"], mode="txt"):
         name, diet, first location, and type fields.
     """
     name = animal["name"]
-    location = animal["locations"][0]
+    location = animal["locations"][0] if animal["locations"] else "Unknown"
     other_traits = [(field, get_animal_field_value(animal, field)) for field in fields]
 
     output = ''

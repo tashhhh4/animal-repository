@@ -42,10 +42,6 @@ def get_animal_data():
     animal_data = fetch_data(secrets.API_KEY, config["query"])
     return animal_data
 
-def get_fields():
-    fields = get_all_fields(get_animal_data())
-    return fields
-
 
 # Print Helpers
 
@@ -102,7 +98,7 @@ def get_y_n(user_input):
 def add_fields():
     """ Allows user to choose any number of fields available in the dataset. """
     print("Available fields:")
-    fields = get_fields()
+    fields = get_all_fields()
     print_comma_list(fields)
     user_input = input("Input desired fields, separated by spaces: ")
     user_args_cleaned = split_user_args(user_input, onlyin=fields)
@@ -131,7 +127,7 @@ def remove_fields():
 def add_filter():
     """ Allows user to add a filter on the dataset. """
     animal_data = get_animal_data()
-    fields = get_fields()
+    fields = get_all_fields()
 
     print()
     print("Fields available for filtering:")
