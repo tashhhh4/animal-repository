@@ -1,0 +1,1 @@
+JSON_FILENAME = "animals_data.json"
