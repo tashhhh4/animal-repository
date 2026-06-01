@@ -8,7 +8,7 @@ A webpage which tracks and displays information about various mammalian species.
 | Codio Project | Zootopia                           |
 | Version       | 3                                  |
 
-Version 3 adds refinements to the way webpage generation is handled. The User is now always prompted to enter the animal name query when running the webpage generator. You can still edit the query in the config editor but this is not used in the webpage generator. (change not implemented)
+Version 3 adds refinements to the way webpage generation is handled. The User is now always prompted to enter the animal name query when running the webpage generator. You can still edit the query in the config editor but this is not used in the webpage generator.
 
 
 ## Demo Page

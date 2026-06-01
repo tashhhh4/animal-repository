@@ -6,6 +6,16 @@ from animals_card_generator import generate_animal_card_list
 from config_editor import load_config
 
 
+def get_animal_query():
+    """ Prompts the user for the name of an animal. """
+    while True:
+        user_input = input("Please enter the name of an animal: ")
+        if not user_input:
+            print("Empty input. Please try again: ")
+            continue
+        return user_input
+
+
 def generate_animals_page(template_file, output_file, animals_str):
     """ Replaces the placeholder string in `template_file` with `animals_str`,
         and saves the result to a new `output_file`.
@@ -25,8 +35,9 @@ def generate_animals_page(template_file, output_file, animals_str):
 
 
 if __name__ == "__main__":
+    animal_name = get_animal_query()
     config = load_config()
-    animal_data = fetch_data(config["query"])
+    animal_data = fetch_data(animal_name)
     animals_str = generate_animal_card_list(animal_data, mode="html")
     generate_animals_page(settings.TEMPLATE_FILENAME, settings.OUTPUT_FILENAME, animals_str)
     path = pathlib.Path(settings.OUTPUT_FILENAME).resolve()
