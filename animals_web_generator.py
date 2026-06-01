@@ -1,6 +1,6 @@
 import sys
 import pathlib
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError as RequestsConnectionError
 import settings
 from data_fetcher import (
     load_data, fetch_data, MissingApiKeyError, InvalidApiKeyError
@@ -56,7 +56,7 @@ def main():
         print(e)
         return
 
-    except ConnectionError as e:
+    except RequestsConnectionError as e:
         print("Failed to connect to the API service. Please check your internet connection.")
         return
 

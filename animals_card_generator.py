@@ -1,43 +1,42 @@
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError as RequestsConnectionError
 from data_fetcher import (
     fetch_data, get_all_fields, MissingApiKeyError, InvalidApiKeyError
 )
 from config_editor import load_config
 
-config = load_config()
 
-
-def passes_filter(animal, filter):
+def passes_filter(animal, filter_):
     """ Determines if one animal object matches the rules of the filter. """
-    filter_type = filter["type"]
-    match_case = filter["match_case"]
-    query = filter["query"]
-    actual_value = get_animal_field_value(animal, filter["field"])
+    match_case = filter_["match_case"]
+    query = filter_["query"]
+    actual_value = get_animal_field_value(animal, filter_["field"])
     if not match_case:
         query = query.lower()
         if actual_value is not None:
             actual_value = actual_value.lower()
 
-    if filter["type"] == "EQUALS":
-        if filter["query"] != actual_value:
+    if filter_["type"] == "EQUALS":
+        if filter_["query"] != actual_value:
             return False
 
-    elif filter["type"] == "CONTAINS":
+    elif filter_["type"] == "CONTAINS":
         if actual_value is None:
             return False
-        if filter["query"] not in actual_value:
+        if filter_["query"] not in actual_value:
             return False
 
     else:
-        raise ValueError("Invalid filter type! (You can run config_editor.py to remove filters or reset all settings to default.)")
+        raise ValueError(("Invalid filter type! (You can run config_editor.py "
+                          "to remove filters or reset all settings to default.)"
+        ))
 
     return True
 
 
 def filter_animals(animals, filters):
     """ Removes items from animals which do not match the list of filters. """
-    for filter in filters:
-        animals = [a for a in animals if passes_filter(a, filter)]
+    for filter_ in filters:
+        animals = [a for a in animals if passes_filter(a, filter_)]
     return animals
 
 
@@ -50,14 +49,16 @@ def get_animal_field_value(animal, field):
     parent_field = fields[field]
     if field in animal[parent_field]:
         return animal[parent_field][field]
-    else:
-        return None
+
+    return None
 
 
-def serialize_animal(animal, fields=["diet", "type"], mode="txt"):
+def serialize_animal(animal, fields=None, mode="txt"):
     """ Given an animal data object, generates an output string with the
         name, diet, first location, and type fields.
     """
+    if fields is None:
+        fields = ["diet", "type"]
     name = animal["name"]
     location = animal["locations"][0] if animal["locations"] else "Unknown"
     other_traits = [(field, get_animal_field_value(animal, field)) for field in fields]
@@ -82,10 +83,10 @@ def serialize_animal(animal, fields=["diet", "type"], mode="txt"):
                 output += f'<li><strong>{field_name.capitalize()}:</strong> {value}</li>'
         output += '</ul>'
         output += '</li>\n'
-    
+
     else:
         raise TypeError(f"Invalid argument \"{mode}\" for output mode (txt | html).")
-    
+
     return output
 
 
@@ -97,8 +98,9 @@ def generate_animal_card_list(animals, animal_query, mode="txt"):
     """
     print("Generating card list.")
     config = load_config()
-    print("Loaded config for card list generator.")
-    if not len(animals):
+
+    # Handle empty query result
+    if len(animals) == 0:
         output = ''
         if mode == "html":
             output += '<p class="feedback">'
@@ -106,14 +108,30 @@ def generate_animal_card_list(animals, animal_query, mode="txt"):
         if mode == "html":
             output += '</p>'
         return output
+
+    # Handle empty filter result
     animals = filter_animals(animals, config["filters"])
+    if len(animals) == 0:
+        output = ''
+        if mode == "html":
+            output += '<p class="feedback">'
+        output += 'There are animals matching the current set of filters.'
+        if mode == "html":
+            output += '</p>'
+        return output
+
+    # Handle successful animal data output
     output = ''
     for animal in animals:
         output += serialize_animal(animal, fields=config["fields"], mode=mode)
+
     return output
 
 
-if __name__ == "__main__":
+def main():
+    """ Runs animal card generator in console output mode based on settings in config.json. """
+    config = load_config()
+
     try:
         animal_data = fetch_data(config["query"])
         print(generate_animal_card_list(animal_data, config["query"]))
@@ -124,8 +142,12 @@ if __name__ == "__main__":
     except InvalidApiKeyError as e:
         print(e)
 
-    except ConnectionError as e:
+    except RequestsConnectionError as e:
         print("Failed to connect to the API service. Please check your internet connection.")
 
     except Exception as e:
         print(e)
+
+
+if __name__ == "__main__":
+    main()
