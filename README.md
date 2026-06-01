@@ -28,7 +28,7 @@ Generates an HTML page that can be run in the
 browser to see a formatted list of fact cards.
 
 ```
-python animals_page_generator.py
+python animals_web_generator.py
 ```
 
 Output: `animals.html`
