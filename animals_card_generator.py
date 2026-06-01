@@ -1,7 +1,10 @@
-from data_fetcher import fetch_data, get_all_fields
+from data import load_data, get_all_fields
 from config_editor import load_config
 
-config = load_config()
+JSON_FILENAME = "animals_data.json"
+CONFIG_FILENAME = "config.json"
+ANIMAL_DATA = load_data(JSON_FILENAME)
+FIELDS = get_all_fields(ANIMAL_DATA)
 
 
 def passes_filter(animal, filter):
@@ -12,8 +15,7 @@ def passes_filter(animal, filter):
     actual_value = get_animal_field_value(animal, filter["field"])
     if not match_case:
         query = query.lower()
-        if actual_value is not None:
-            actual_value = actual_value.lower()
+        actual_value = actual_value.lower()
 
     if filter["type"] == "EQUALS":
         if filter["query"] != actual_value:
@@ -43,8 +45,7 @@ def get_animal_field_value(animal, field):
         either the "characteristics" or "taxonomy" dicts.
         Returns None if the animal does not have this field.
     """
-    fields = get_all_fields()
-    parent_field = fields[field]
+    parent_field = FIELDS[field]
     if field in animal[parent_field]:
         return animal[parent_field][field]
     else:
@@ -56,7 +57,7 @@ def serialize_animal(animal, fields=["diet", "type"], mode="txt"):
         name, diet, first location, and type fields.
     """
     name = animal["name"]
-    location = animal["locations"][0] if animal["locations"] else "Unknown"
+    location = animal["locations"][0]
     other_traits = [(field, get_animal_field_value(animal, field)) for field in fields]
 
     output = ''
@@ -92,16 +93,7 @@ def generate_animal_card_list(animals, mode="txt"):
             "txt": Returns a string that can be printed to the console.
             "html": Returns a string of <li> elements for an HTML template.
     """
-    print("Generating card list.")
     config = load_config()
-    if not len(animals):
-        output = ''
-        if mode == "html":
-            output += '<p class="feedback">'
-        output += f"There are no animals called \"{config['query']}\"."
-        if mode == "html":
-            output += '</p>'
-        return output
     animals = filter_animals(animals, config["filters"])
     output = ''
     for animal in animals:
@@ -110,5 +102,5 @@ def generate_animal_card_list(animals, mode="txt"):
 
 
 if __name__ == "__main__":
-    animal_data = fetch_data(config["query"])
+    animal_data = load_data(JSON_FILENAME)
     print(generate_animal_card_list(animal_data))

@@ -1,9 +1,7 @@
-import sys
-import pathlib
-import settings
-from data_fetcher import load_data, fetch_data
+from data import load_data
 from animals_card_generator import generate_animal_card_list
-from config_editor import load_config
+
+JSON_FILENAME = "animals_data.json"
 
 
 def generate_animals_page(template_file, output_file, animals_str):
@@ -25,9 +23,6 @@ def generate_animals_page(template_file, output_file, animals_str):
 
 
 if __name__ == "__main__":
-    config = load_config()
-    animal_data = fetch_data(config["query"])
+    animal_data = load_data(JSON_FILENAME)
     animals_str = generate_animal_card_list(animal_data, mode="html")
-    generate_animals_page(settings.TEMPLATE_FILENAME, settings.OUTPUT_FILENAME, animals_str)
-    path = pathlib.Path(settings.OUTPUT_FILENAME).resolve()
-    print(f"Saved view to: {path.as_uri()}")
+    generate_animals_page("animals_template.html", "animals.html", animals_str)

@@ -1,17 +1,15 @@
 import json
-import settings
-from data_fetcher import load_data, fetch_data, get_all_fields, get_values_sample
+from data import load_data, get_all_fields, get_values_sample
 
+DATA_FILENAME = "animals_data.json"
 CONFIG_FILENAME = "config.json"
+ANIMAL_DATA = load_data(DATA_FILENAME)
+FIELDS = get_all_fields(ANIMAL_DATA)
 FILTER_TYPES = {
     "EQUALS": "Matches only if the field value is EXACTLY the same as the filter.",
     "CONTAINS": "Matches if the filter text is found anywhere in the field.",
 }
-CONFIG_DEFAULT = json.dumps({
-    "fields": ["diet", "type"],
-    "filters": [{"field": "skin_type", "type": "EQUALS", "query": "fur", "match_case": False}],
-    "query": "Fox"}
-)
+CONFIG_DEFAULT = '{"fields": ["diet", "type"], "filters": [{"field": "skin_type", "type": "EQUALS", "query": "fur", "match_case": false}]}'
 
 
 # IO
@@ -22,24 +20,18 @@ def load_config():
         config = json.load(file)
     return config
 
+
 def save_config(config):
     """ Saves the config. """
     with open(CONFIG_FILENAME, "w") as file:
         new_config = json.dumps(config)
         file.write(new_config)
 
+
 def reset_default_config():
     """ Overwrites the current config with the default settings. """
     with open(CONFIG_FILENAME, "w") as file:
         file.write(CONFIG_DEFAULT)
-
-
-# Preview Data
-
-def get_animal_data():
-    config = load_config()
-    animal_data = fetch_data(config["query"])
-    return animal_data
 
 
 # Print Helpers
@@ -97,10 +89,9 @@ def get_y_n(user_input):
 def add_fields():
     """ Allows user to choose any number of fields available in the dataset. """
     print("Available fields:")
-    fields = get_all_fields()
-    print_comma_list(fields)
+    print_comma_list(list(FIELDS))
     user_input = input("Input desired fields, separated by spaces: ")
-    user_args_cleaned = split_user_args(user_input, onlyin=fields)
+    user_args_cleaned = split_user_args(user_input, onlyin=FIELDS)
     config = load_config()
     for field in user_args_cleaned:
         if field not in config["fields"]:                
@@ -125,16 +116,13 @@ def remove_fields():
 
 def add_filter():
     """ Allows user to add a filter on the dataset. """
-    animal_data = get_animal_data()
-    fields = get_all_fields()
-
     print()
     print("Fields available for filtering:")
-    print_comma_list(fields)
+    print_comma_list(list(FIELDS))
     print()
     user_input = input("Enter field to filter by: ")
     print()
-    user_args_cleaned = split_user_args(user_input, onlyin=fields)
+    user_args_cleaned = split_user_args(user_input, onlyin=FIELDS)
     if len(user_args_cleaned) == 0:
         print("Field not found.")
         return
@@ -143,7 +131,7 @@ def add_filter():
         return
     filter_field = user_args_cleaned[0]
     print(f"Composing filter on {filter_field}. Some examples of values found here are:")
-    sample_values = get_values_sample(animal_data, fields[filter_field], filter_field, num=6)
+    sample_values = get_values_sample(ANIMAL_DATA, FIELDS[filter_field], filter_field, num=6)
     print_vertical_list(sample_values, tab=8)
     print()
     print("Available filters are:")
@@ -201,24 +189,11 @@ def remove_filter():
 def show_config():
     """ Prints out all of the current settings. """
     config = load_config()
-    print("Animal Name Query:", config["query"])
-    print()
     print("Field Selection:")
     print_comma_list(config["fields"])
     print()
     print("Active Filters:")
     print_filter_list(config["filters"])
-
-
-def edit_query():
-    """ Allows the user to change the basic animal query sent to the Animals API. """
-    print("Edit the name of an animal to search. Here are some examples:")
-    print("   Fox   Bear   Spider")
-    user_input = input("New animal name query: ")
-    config = load_config()
-    config["query"] = user_input
-    save_config(config)
-    print("Config updated.")
 
 
 def reset_config():
@@ -235,7 +210,6 @@ available_commands = {
     "add_filter": add_filter,
     "remove_filter": remove_filter,
     "show_config": show_config,
-    "edit_query": edit_query,
     "reset_config": reset_config,
 }
 
