@@ -111,4 +111,4 @@ def generate_animal_card_list(animals, animal_query, mode="txt"):
 
 if __name__ == "__main__":
     animal_data = fetch_data(config["query"])
-    print(generate_animal_card_list(animal_data))
+    print(generate_animal_card_list(animal_data, config["query"]))
