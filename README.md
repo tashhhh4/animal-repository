@@ -6,6 +6,9 @@ A webpage which tracks and displays information about various mammalian species.
 | Author        | Natasha Libera                     |
 | Course        | MSIT Software Entwicklung Jan 2026 |
 | Codio Project | Zootopia                           |
+| Version       | 2                                  |
+
+In version 2, the Animals API (API Ninja) is used to fetch data about animals in order to generate the content of the console or webpage. The config editor can be used to edit the parameters sent to the API such as the initial query (name of an animal), and which data fields to display.
 
 
 ## Demo Page
