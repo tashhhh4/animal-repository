@@ -6,12 +6,17 @@ QUERY_CACHEFILE = "query.txt"
 FIELDS_CACHEFILE = "fields.json"
 
 class MissingApiKeyError(Exception):
+    """ Raised if the API Key is missing. """
     def __init__(self):
-        super().__init__("Error: Missing API Key. Please make sure that the `.env` file exists and contains an active `API_KEY`.")
+        super().__init__(("Error: Missing API Key. Please make sure that the `.env` "
+                         "file exists and contains an active `API_KEY`."))
 
 class InvalidApiKeyError(Exception):
+    """ Raised if the API Key exists but is rejected. """
     def __init__(self):
-        super().__init__("Error: Invalid API Key. Double check your API Key from API Ninja, copy and paste the exact value as API_KEY=<your_key_value> into your `.env` file.")
+        super().__init__(("Error: Invalid API Key. Double check your API Key from "
+                         "API Ninja, copy and paste the exact value as"
+                         " API_KEY=<your_key_value> into your `.env` file."))
 
 
 def clean_data(data_str):
@@ -23,20 +28,20 @@ def clean_data(data_str):
 
 def get_query_cache():
     """ Returns an animal name query from the query cache file. """
-    with open(QUERY_CACHEFILE, 'r') as file:
+    with open(QUERY_CACHEFILE, 'r', encoding="utf-8") as file:
         query = file.read()
     return query
 
 
 def set_query_cache(query):
     """ Sets the animal name query in the query cache file. """
-    with open(QUERY_CACHEFILE, 'w') as file:
+    with open(QUERY_CACHEFILE, 'w', encoding="utf-8") as file:
         file.write(query)
 
 
 def load_data(file_path):
     """ Loads a JSON file. """
-    with open(file_path, "r") as file:
+    with open(file_path, "r", encoding="utf-8") as file:
         data_str = file.read()
         cleaned_str = clean_data(data_str)
         return json.loads(cleaned_str)
@@ -58,7 +63,7 @@ def validate_data(data):
 def save_data(file_path, data):
     """ Overwrites the local JSON datafile with the latest API call. """
     json_data = json.dumps(data)
-    with open(file_path, "w") as file:
+    with open(file_path, "w", encoding="utf-8") as file:
         file.write(json_data)
 
 
@@ -74,7 +79,10 @@ def fetch_data(animal_query):
     else:
         set_query_cache(animal_query)
         headers = {"X-Api-Key": settings.API_KEY}
-        response = requests.get(f'https://api.api-ninjas.com/v1/animals?name={animal_query}', headers=headers)
+        response = requests.get(
+            f'https://api.api-ninjas.com/v1/animals?name={animal_query}',
+            headers=headers
+        )
         data = response.json()
         save_data(settings.JSON_FILENAME, data)
         validate_data(data)
@@ -108,18 +116,18 @@ def get_dataset_fields(data):
 
 def update_fields_cache(new_fields):
     """ Updates the fields cache with new fields if necessary. """
-    with open(FIELDS_CACHEFILE, 'r') as file:
+    with open(FIELDS_CACHEFILE, 'r', encoding="utf-8") as file:
         fields = json.loads(file.read())
     for field in new_fields:
         if field not in fields:
             fields[field] = new_fields[field]
-    with open(FIELDS_CACHEFILE, 'w') as file:
+    with open(FIELDS_CACHEFILE, 'w', encoding="utf-8") as file:
         file.write(json.dumps(fields))
 
 
 def get_all_fields():
     """ Gets all discovered fields from the fields cache file, and returns them as a list."""
-    with open(FIELDS_CACHEFILE, 'r') as file:
+    with open(FIELDS_CACHEFILE, 'r', encoding="utf-8") as file:
         data = json.loads(file.read())
     return data
 
