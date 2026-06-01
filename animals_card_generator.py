@@ -1,4 +1,4 @@
-from data_fetcher import fetch_data, get_all_fields
+from data_fetcher import fetch_data, get_all_fields, MissingApiKeyError
 from config_editor import load_config
 
 config = load_config()
@@ -94,6 +94,7 @@ def generate_animal_card_list(animals, animal_query, mode="txt"):
     """
     print("Generating card list.")
     config = load_config()
+    print("Loaded config for card list generator.")
     if not len(animals):
         output = ''
         if mode == "html":
@@ -110,5 +111,12 @@ def generate_animal_card_list(animals, animal_query, mode="txt"):
 
 
 if __name__ == "__main__":
-    animal_data = fetch_data(config["query"])
-    print(generate_animal_card_list(animal_data, config["query"]))
+    try:
+        animal_data = fetch_data(config["query"])
+        print(generate_animal_card_list(animal_data, config["query"]))
+
+    except MissingApiKeyError as e:
+        print(e)
+
+    except Exception as e:
+        print(e)

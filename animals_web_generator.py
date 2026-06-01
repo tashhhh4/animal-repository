@@ -35,9 +35,13 @@ def generate_animals_page(template_file, output_file, animals_str):
 
 
 if __name__ == "__main__":
+    print("Running main web generator script.")
     animal_name = get_animal_query()
+    print("Want to query API for", f'"{animal_name}"')
     config = load_config()
+    print("Loaded config.")
     animal_data = fetch_data(animal_name)
+    print("animal_data is", type(animal_data), "\n", animal_data)
     animals_str = generate_animal_card_list(animal_data, animal_name, mode="html")
     generate_animals_page(settings.TEMPLATE_FILENAME, settings.OUTPUT_FILENAME, animals_str)
     path = pathlib.Path(settings.OUTPUT_FILENAME).resolve()
