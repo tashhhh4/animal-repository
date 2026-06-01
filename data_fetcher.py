@@ -7,7 +7,11 @@ FIELDS_CACHEFILE = "fields.json"
 
 class MissingApiKeyError(Exception):
     def __init__(self):
-        super().__init__("Error: Missing API Key. Please make sure that the file `.env` exists and contains an active `API_KEY`.")
+        super().__init__("Error: Missing API Key. Please make sure that the `.env` file exists and contains an active `API_KEY`.")
+
+class InvalidApiKeyError(Exception):
+    def __init__(self):
+        super().__init__("Error: Invalid API Key. Double check your API Key from API Ninja, copy and paste the exact value as API_KEY=<your_key_value> into your `.env` file.")
 
 
 def clean_data(data_str):
@@ -45,6 +49,9 @@ def validate_data(data):
         if data["error"] == "Missing API Key.":
             raise MissingApiKeyError
 
+        if data["error"] == "Invalid API Key.":
+            raise InvalidApiKeyError
+
         raise Exception("An error occurred:", data["error"])
 
 
@@ -56,24 +63,21 @@ def save_data(file_path, data):
 
 
 def fetch_data(animal_query):
-    print("running fetch_data")
     """ Fetches JSON data from the Animals API """
     # Check if the query needs to be repeated
     cached_query = get_query_cache()
 
     if cached_query == animal_query:
-        print("running load data from cache")
         data = load_data(settings.JSON_FILENAME)
         validate_data(data)
 
     else:
-        print("fetching new data!")
         set_query_cache(animal_query)
         headers = {"X-Api-Key": settings.API_KEY}
         response = requests.get(f'https://api.api-ninjas.com/v1/animals?name={animal_query}', headers=headers)
         data = response.json()
-        validate_data(data)
         save_data(settings.JSON_FILENAME, data)
+        validate_data(data)
 
         # Update fields collection
         fields = get_dataset_fields(data)

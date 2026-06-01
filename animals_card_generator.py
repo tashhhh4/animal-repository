@@ -1,4 +1,7 @@
-from data_fetcher import fetch_data, get_all_fields, MissingApiKeyError
+from requests.exceptions import ConnectionError
+from data_fetcher import (
+    fetch_data, get_all_fields, MissingApiKeyError, InvalidApiKeyError
+)
 from config_editor import load_config
 
 config = load_config()
@@ -117,6 +120,12 @@ if __name__ == "__main__":
 
     except MissingApiKeyError as e:
         print(e)
+
+    except InvalidApiKeyError as e:
+        print(e)
+
+    except ConnectionError as e:
+        print("Failed to connect to the API service. Please check your internet connection.")
 
     except Exception as e:
         print(e)

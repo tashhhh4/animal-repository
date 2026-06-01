@@ -1,7 +1,10 @@
 import sys
 import pathlib
+from requests.exceptions import ConnectionError
 import settings
-from data_fetcher import load_data, fetch_data, MissingApiKeyError
+from data_fetcher import (
+    load_data, fetch_data, MissingApiKeyError, InvalidApiKeyError
+)
 from animals_card_generator import generate_animal_card_list
 from config_editor import load_config
 
@@ -47,6 +50,14 @@ def main():
     
     except MissingApiKeyError as e:
         print(e)
+        return
+
+    except InvalidApiKeyError as e:
+        print(e)
+        return
+
+    except ConnectionError as e:
+        print("Failed to connect to the API service. Please check your internet connection.")
         return
 
     except Exception as e:
