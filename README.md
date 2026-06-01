@@ -1,4 +1,4 @@
-# Animal Repository
+# Animal Repository - Version 1
 A webpage which tracks and displays information about various mammalian species.
 
 |               |                                    |
@@ -6,6 +6,9 @@ A webpage which tracks and displays information about various mammalian species.
 | Author        | Natasha Libera                     |
 | Course        | MSIT Software Entwicklung Jan 2026 |
 | Codio Project | Zootopia                           |
+| Version       | 1                                  |
+
+This version generates a webpage WITHOUT contacting any external APIs, and instead uses a static json data file in `animals_data.json`.
 
 
 ## Demo Page
