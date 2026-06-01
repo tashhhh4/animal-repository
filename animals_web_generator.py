@@ -1,7 +1,7 @@
 import sys
 import pathlib
 import settings
-from data_fetcher import load_data, fetch_data
+from data_fetcher import load_data, fetch_data, MissingApiKeyError
 from animals_card_generator import generate_animal_card_list
 from config_editor import load_config
 
@@ -34,15 +34,30 @@ def generate_animals_page(template_file, output_file, animals_str):
         file.write(output_str)
 
 
-if __name__ == "__main__":
-    print("Running main web generator script.")
+def main():
+    """ Prompts user for animal name input,
+    runs a fetch for the animal data,
+    and generates a browser-viewable webpage at `animals.html`.
+    """
     animal_name = get_animal_query()
-    print("Want to query API for", f'"{animal_name}"')
     config = load_config()
-    print("Loaded config.")
-    animal_data = fetch_data(animal_name)
-    print("animal_data is", type(animal_data), "\n", animal_data)
+
+    try:
+        animal_data = fetch_data(animal_name)
+    
+    except MissingApiKeyError as e:
+        print(e)
+        return
+
+    except Exception as e:
+        print(e)
+        return
+
     animals_str = generate_animal_card_list(animal_data, animal_name, mode="html")
     generate_animals_page(settings.TEMPLATE_FILENAME, settings.OUTPUT_FILENAME, animals_str)
     path = pathlib.Path(settings.OUTPUT_FILENAME).resolve()
     print(f"Saved view to: {path.as_uri()}")
+
+
+if __name__ == "__main__":
+    main()
