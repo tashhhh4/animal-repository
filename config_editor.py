@@ -1,6 +1,5 @@
 import json
-import settings
-from data_fetcher import load_data, fetch_data, get_all_fields, get_values_sample
+from data_fetcher import fetch_data, get_all_fields, get_values_sample
 
 CONFIG_FILENAME = "config.json"
 FILTER_TYPES = {
@@ -18,25 +17,26 @@ CONFIG_DEFAULT = json.dumps({
 
 def load_config():
     """ Loads the config. """
-    with open(CONFIG_FILENAME, "r") as file:
+    with open(CONFIG_FILENAME, "r", encoding="utf-8") as file:
         config = json.load(file)
     return config
 
 def save_config(config):
     """ Saves the config. """
-    with open(CONFIG_FILENAME, "w") as file:
+    with open(CONFIG_FILENAME, "w", encoding="utf-8") as file:
         new_config = json.dumps(config)
         file.write(new_config)
 
 def reset_default_config():
     """ Overwrites the current config with the default settings. """
-    with open(CONFIG_FILENAME, "w") as file:
+    with open(CONFIG_FILENAME, "w", encoding="utf-8") as file:
         file.write(CONFIG_DEFAULT)
 
 
 # Preview Data
 
 def get_animal_data():
+    """ Runs an Animal API query and returns the data. """
     config = load_config()
     animal_data = fetch_data(config["query"])
     return animal_data
@@ -64,11 +64,11 @@ def print_vertical_list(list_, tab=4):
 
 def print_filter_list(flist):
     """ Prints a list of filters showing all current settings. """
-    for i, filter in enumerate(flist):
-        field_name = filter["field"]
-        type_ = filter["type"]
-        query = filter["query"]
-        match_case = filter["match_case"]
+    for i, filter_ in enumerate(flist):
+        field_name = filter_["field"]
+        type_ = filter_["type"]
+        query = filter_["query"]
+        match_case = filter_["match_case"]
         print(f"{i + 1}: {field_name} {type_} {query}", end=" ")
         print(f"[case-{'sensitive' if match_case else 'insensitive'}]")
 
@@ -87,7 +87,7 @@ def get_y_n(user_input):
     """ Returns True or False based on user's answer to a (Y/N) question. """
     if user_input.lower() in ['y', 'yes', 'true', 'si', 'ja']:
         return True
-    elif user_input.lower() in ['n', 'no', 'nein', 'nej', 'false']:
+    if user_input.lower() in ['n', 'no', 'nein', 'nej', 'false']:
         return False
     return None
 
@@ -103,7 +103,7 @@ def add_fields():
     user_args_cleaned = split_user_args(user_input, onlyin=fields)
     config = load_config()
     for field in user_args_cleaned:
-        if field not in config["fields"]:                
+        if field not in config["fields"]:
             config["fields"].append(field)
     save_config(config)
     print("Saved config.")
@@ -148,7 +148,7 @@ def add_filter():
     print()
     print("Available filters are:")
     filter_type_descriptions = (
-        [f"{filter}: {description}" for filter, description in FILTER_TYPES.items()])
+        [f"{filter_}: {description}" for filter_, description in FILTER_TYPES.items()])
     print_vertical_list(filter_type_descriptions, tab=8)
     print()
     user_input = input("Choose filter type: ")
@@ -159,7 +159,7 @@ def add_filter():
     print()
     user_input = input("Should the filter be case sensitive? (Y/N): ")
     answer = get_y_n(user_input)
-    match_case = answer == True
+    match_case = answer is True
     print()
     filter_type = user_input_cleaned[0]
     filter_text = input("Enter filter text: ")
@@ -223,7 +223,8 @@ def edit_query():
 
 def reset_config():
     """ Resets the config to the default settings. """
-    confirm = input("Are you sure you want to erase all settings and revert to the default configuration? (Y/N): ")
+    confirm = input(("Are you sure you want to erase all settings and "
+                     "revert to the default configuration? (Y/N): "))
     if confirm.lower() in ['y', 'yes', 'true']:
         reset_default_config()
         print("Config updated.")
