@@ -86,7 +86,7 @@ def serialize_animal(animal, fields=["diet", "type"], mode="txt"):
     return output
 
 
-def generate_animal_card_list(animals, mode="txt"):
+def generate_animal_card_list(animals, animal_query, mode="txt"):
     """ Generates a list of animal cards.
         `mode`
             "txt": Returns a string that can be printed to the console.
@@ -98,7 +98,7 @@ def generate_animal_card_list(animals, mode="txt"):
         output = ''
         if mode == "html":
             output += '<p class="feedback">'
-        output += f"There are no animals called \"{config['query']}\"."
+        output += f"There are no animals called \"{animal_query}\"."
         if mode == "html":
             output += '</p>'
         return output

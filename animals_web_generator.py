@@ -38,7 +38,7 @@ if __name__ == "__main__":
     animal_name = get_animal_query()
     config = load_config()
     animal_data = fetch_data(animal_name)
-    animals_str = generate_animal_card_list(animal_data, mode="html")
+    animals_str = generate_animal_card_list(animal_data, animal_name, mode="html")
     generate_animals_page(settings.TEMPLATE_FILENAME, settings.OUTPUT_FILENAME, animals_str)
     path = pathlib.Path(settings.OUTPUT_FILENAME).resolve()
     print(f"Saved view to: {path.as_uri()}")
