@@ -1,9 +1,11 @@
+from datetime import date
 import json
 import requests
 import settings
 
 QUERY_CACHEFILE = "query.txt"
 FIELDS_CACHEFILE = "fields.json"
+STALE_QUERY_AGE = 30 # days
 
 class MissingApiKeyError(Exception):
     """ Raised if the API Key is missing. """
@@ -27,16 +29,34 @@ def clean_data(data_str):
 
 
 def get_query_cache():
-    """ Returns an animal name query from the query cache file. """
-    with open(QUERY_CACHEFILE, 'r', encoding="utf-8") as file:
-        query = file.read()
-    return query
+    """ Returns an animal name query from the query cache file, and the number of days since retrieval.
+        If the file is missing or corrupted, returns None, None.
+    """
+    try:
+        with open(QUERY_CACHEFILE, 'r', encoding="utf-8") as file:
+            data = file.read().splitlines()
 
+        if len(data) != 2:
+            return None, None
+
+        query = data[0]
+        saved_date = date.fromisoformat(data[1])
+        today = date.today()
+        days_since = (today - saved_date).days
+        return query, days_since
+
+    except FileNotFoundError:
+        return None, None
 
 def set_query_cache(query):
-    """ Sets the animal name query in the query cache file. """
+    """ Sets the animal name query in the query cache file, and the date. """
+    today = date.today()
+    date_str = today.isoformat()
+
     with open(QUERY_CACHEFILE, 'w', encoding="utf-8") as file:
         file.write(query)
+        file.write('\n')
+        file.write(date_str)
 
 
 def load_data(file_path):
@@ -70,26 +90,32 @@ def save_data(file_path, data):
 def fetch_data(animal_query):
     """ Fetches JSON data from the Animals API """
     # Check if the query needs to be repeated
-    cached_query = get_query_cache()
+    cached_query, days_since = get_query_cache()
 
-    if cached_query == animal_query:
-        data = load_data(settings.JSON_FILENAME)
-        validate_data(data)
+    if cached_query is not None and days_since is not None:
+        if cached_query == animal_query and days_since < STALE_QUERY_AGE:
+            print(f'loading query about {animal_query} from cache')
+            data = load_data(settings.JSON_FILENAME)
+            validate_data(data)
 
-    else:
-        set_query_cache(animal_query)
-        headers = {"X-Api-Key": settings.API_KEY}
-        response = requests.get(
-            f'https://api.api-ninjas.com/v1/animals?name={animal_query}',
-            headers=headers
-        )
-        data = response.json()
-        save_data(settings.JSON_FILENAME, data)
-        validate_data(data)
+            return data
 
-        # Update fields collection
-        fields = get_dataset_fields(data)
-        update_fields_cache(fields)
+    print(f'fetching fresh data about {animal_query}')
+    headers = {"X-Api-Key": settings.API_KEY}
+    response = requests.get(
+        f'https://api.api-ninjas.com/v1/animals?name={animal_query}',
+        headers=headers
+    )
+    data = response.json()
+    validate_data(data)
+    save_data(settings.JSON_FILENAME, data)
+
+    # Update fields collection
+    fields = get_dataset_fields(data)
+    update_fields_cache(fields)
+
+    # Remember making this query
+    set_query_cache(animal_query)
 
     return data
 
